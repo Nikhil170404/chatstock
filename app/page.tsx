@@ -5,21 +5,78 @@ import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 import TypingIndicator from '@/components/TypingIndicator';
 import SuggestedPrompts from '@/components/SuggestedPrompts';
-import { Message, ChatRequest, ChatResponse } from '@/lib/types';
+import ConversationHistory from '@/components/ConversationHistory';
+import { Message, ChatRequest, ChatResponse, Conversation } from '@/lib/types';
+import {
+  getAllConversations,
+  getConversationSummaries,
+  getConversation,
+  saveConversation,
+  createNewConversation
+} from '@/lib/conversationStorage';
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [conversationSummaries, setConversationSummaries] = useState<ReturnType<typeof getConversationSummaries>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Load conversation summaries on mount
+  useEffect(() => {
+    refreshConversationList();
+  }, []);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
+  // Save current conversation when messages change
+  useEffect(() => {
+    if (messages.length > 0 && currentConversationId) {
+      const conversation: Conversation = {
+        id: currentConversationId,
+        title: messages[0]?.content.slice(0, 40) + '...' || 'New Conversation',
+        messages,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      saveConversation(conversation);
+      refreshConversationList();
+    }
+  }, [messages, currentConversationId]);
+
+  const refreshConversationList = () => {
+    setConversationSummaries(getConversationSummaries());
+  };
+
+  const handleNewConversation = () => {
+    const newConv = createNewConversation();
+    setCurrentConversationId(newConv.id);
+    setMessages([]);
+    setError(null);
+  };
+
+  const handleSelectConversation = (id: string) => {
+    const conversation = getConversation(id);
+    if (conversation) {
+      setCurrentConversationId(conversation.id);
+      setMessages(conversation.messages);
+      setError(null);
+    }
+  };
+
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || isLoading) return;
+
+    // Create new conversation if none exists
+    if (!currentConversationId) {
+      const newConv = createNewConversation();
+      setCurrentConversationId(newConv.id);
+    }
 
     // Clear any previous errors
     setError(null);
@@ -92,11 +149,33 @@ export default function Home() {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gradient-to-br from-slate-50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
+      {/* Conversation History Sidebar */}
+      <ConversationHistory
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        conversations={conversationSummaries}
+        currentConversationId={currentConversationId}
+        onSelectConversation={handleSelectConversation}
+        onNewConversation={handleNewConversation}
+        onRefresh={refreshConversationList}
+      />
+
       {/* Header - Fixed */}
       <header className="flex-shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-700/50 shadow-sm">
         <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             <div className="flex items-center gap-3">
+              {/* History Button */}
+              <button
+                onClick={() => setIsHistoryOpen(true)}
+                className="p-2 sm:p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors group"
+                title="Conversation History"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-slate-600 dark:text-slate-400 group-hover:text-teal-500 dark:group-hover:text-teal-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+
               {/* Logo Icon */}
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/30">
                 <svg
@@ -121,6 +200,19 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              {/* New Chat Button */}
+              <button
+                onClick={handleNewConversation}
+                className="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors"
+                title="New Chat"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="hidden sm:inline">New</span>
+              </button>
+
+              {/* Live Badge */}
               <span className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full shadow-lg shadow-emerald-500/30">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
