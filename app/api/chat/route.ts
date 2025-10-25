@@ -34,12 +34,32 @@ export async function POST(request: NextRequest) {
       {
         role: 'user',
         parts: [{
-          text: 'You are a helpful stock market assistant. Provide accurate, up-to-date information about stocks, markets, and financial news. Use web search to get the latest data when answering questions about current stock prices, market trends, or recent financial news.'
+          text: `You are a helpful stock market assistant. Provide accurate, up-to-date information about stocks, markets, and financial news. Use web search to get the latest data when answering questions about current stock prices, market trends, or recent financial news.
+
+IMPORTANT FORMATTING RULES:
+1. Structure your responses with clear sections using bold headers like **Section Name:**
+2. Use bullet points (- or *) for lists to make information scannable
+3. Group related information together under relevant headers
+4. For stock lists, organize by categories (e.g., **Top Gainers:**, **Banking Stocks:**, etc.)
+5. Keep paragraphs short and concise
+6. Use bold (**text**) for important terms like company names and key metrics
+7. Add a brief summary or key takeaway at the end when relevant
+
+Example format:
+**Current Market Trends:**
+The Indian stock market is showing positive momentum today.
+
+**Top Gainers:**
+- Company Name 1: Brief info
+- Company Name 2: Brief info
+
+**Key Insights:**
+Brief summary of important points.`
         }]
       },
       {
         role: 'model',
-        parts: [{ text: 'I understand. I will help with stock market questions using real-time web search to provide accurate and current information.' }]
+        parts: [{ text: 'I understand. I will provide well-structured, formatted responses using clear sections, bullet points, and bold text for easy reading. I will use web search to provide accurate and current stock market information.' }]
       },
       // Add conversation history (last 3-5 exchanges)
       ...history.slice(-5).map(msg => ({
@@ -57,12 +77,7 @@ export async function POST(request: NextRequest) {
     const geminiRequest: GeminiRequest = {
       contents,
       tools: [{
-        googleSearchRetrieval: {
-          dynamicRetrievalConfig: {
-            mode: 'MODE_DYNAMIC',
-            dynamicThreshold: 0.3
-          }
-        }
+        google_search: {}
       }],
       generationConfig: {
         temperature: 0.7,

@@ -25,12 +25,7 @@ export interface GeminiMessage {
 export interface GeminiRequest {
   contents: GeminiMessage[];
   tools?: {
-    googleSearchRetrieval?: {
-      dynamicRetrievalConfig?: {
-        mode: string;
-        dynamicThreshold: number;
-      };
-    };
+    google_search?: {};
   }[];
   generationConfig?: {
     temperature: number;

@@ -91,40 +91,61 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 transition-colors duration-200">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
-                Stock Chat AI
-              </h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                Real-time stock market insights powered by Google Gemini
-              </p>
+    <div className="fixed inset-0 flex flex-col bg-gradient-to-br from-slate-50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
+      {/* Header - Fixed */}
+      <header className="flex-shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-700/50 shadow-sm">
+        <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            <div className="flex items-center gap-3">
+              {/* Logo Icon */}
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/30">
+                <svg
+                  className="w-6 h-6 sm:w-7 sm:h-7 text-white"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
+                  Stock Chat AI
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 hidden sm:block">
+                  Real-time market insights
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 text-xs font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-full">
-                Live Search
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full shadow-lg shadow-emerald-500/30">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                </span>
+                Live
               </span>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main chat area */}
-      <main className="flex flex-col h-[calc(100vh-80px)]">
-        {/* Messages container */}
-        <div className="flex-1 overflow-y-auto px-4 py-6">
-          <div className="max-w-4xl mx-auto">
-            {messages.length === 0 ? (
-              // Welcome screen
-              <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                <div className="mb-8">
-                  <div className="w-20 h-20 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+      {/* Messages Area - Scrollable */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {messages.length === 0 ? (
+            // Welcome Screen
+            <div className="flex flex-col items-center justify-center min-h-full text-center py-8 sm:py-12">
+              <div className="mb-8 sm:mb-12 space-y-6">
+                {/* Hero Icon */}
+                <div className="relative mx-auto">
+                  <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-emerald-500 rounded-full blur-2xl opacity-30 animate-pulse"></div>
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-teal-500/40 transform hover:scale-105 transition-transform duration-300">
                     <svg
-                      className="w-10 h-10 text-white"
+                      className="w-12 h-12 sm:w-14 sm:h-14 text-white"
                       fill="none"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -132,43 +153,54 @@ export default function Home() {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                      <path d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+                </div>
+                
+                {/* Welcome Text */}
+                <div className="space-y-3">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-100 dark:via-slate-200 dark:to-slate-100 bg-clip-text text-transparent">
                     Welcome to Stock Chat AI
                   </h2>
-                  <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
-                    Ask me anything about stocks, markets, or financial news. I use real-time web search to provide you with the latest information.
+                  <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed px-4">
+                    Your intelligent assistant for real-time stock market insights. Ask me anything about stocks, markets, or financial news.
                   </p>
                 </div>
-                <SuggestedPrompts onSelectPrompt={handleSelectPrompt} />
               </div>
-            ) : (
-              // Chat messages
-              <>
-                {messages.map(message => (
-                  <ChatMessage key={message.id} message={message} />
-                ))}
-                {isLoading && <TypingIndicator />}
-                <div ref={messagesEndRef} />
-              </>
-            )}
-          </div>
+              
+              {/* Suggested Prompts */}
+              <SuggestedPrompts onSelectPrompt={handleSelectPrompt} />
+            </div>
+          ) : (
+            // Chat Messages
+            <div className="space-y-4 sm:space-y-6">
+              {messages.map(message => (
+                <ChatMessage key={message.id} message={message} />
+              ))}
+              {isLoading && <TypingIndicator />}
+              <div ref={messagesEndRef} />
+            </div>
+          )}
         </div>
+      </div>
 
-        {/* Input area */}
+      {/* Input Area - Fixed at Bottom */}
+      <div className="flex-shrink-0 border-t border-slate-200/50 dark:border-slate-700/50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl">
         <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
-      </main>
+      </div>
 
-      {/* Error toast */}
+      {/* Error Toast */}
       {error && (
-        <div className="fixed bottom-24 right-4 bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg max-w-sm animate-slide-up">
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <div className="fixed bottom-28 sm:bottom-32 right-4 sm:right-6 bg-gradient-to-r from-red-500 to-rose-600 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-2xl shadow-2xl max-w-sm animate-slide-up z-50">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
             </svg>
-            <p className="text-sm font-medium">{error}</p>
+            <div>
+              <p className="text-sm sm:text-base font-semibold">Error</p>
+              <p className="text-xs sm:text-sm opacity-90 mt-1">{error}</p>
+            </div>
           </div>
         </div>
       )}
