@@ -3,7 +3,7 @@ import { ChatRequest, GeminiRequest, GeminiResponse } from '@/lib/types';
 
 // Gemini API endpoint
 // Change this line at the top of your file
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
 
 export async function POST(request: NextRequest) {
   try {
